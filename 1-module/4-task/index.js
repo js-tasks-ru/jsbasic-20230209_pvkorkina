@@ -1,3 +1,9 @@
 function checkSpam(str) {
-  // ваш код...
+  const stopWords = ['1xBet', 'XXX'];
+
+  for (let word of stopWords) {
+    if ( str.toLowerCase().includes( word.toLowerCase() ) ) return true;
+  }
+
+  return false;
 }
