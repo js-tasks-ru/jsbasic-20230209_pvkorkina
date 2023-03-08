@@ -1,7 +1,5 @@
 function initCarousel() {
   const width = document.querySelector('[data-carousel-holder]').offsetWidth;
-  // const width = 500;
-  console.log(width);
   const slidesCount = document.querySelectorAll('.carousel__slide').length;
   const arrowLeft = document.querySelector('.carousel__arrow_left');
   const arrowRight = document.querySelector('.carousel__arrow_right');
