@@ -1,27 +1,46 @@
-function initCarousel() {
-  const inner = document.querySelector('.carousel__inner');
-  const slidesCount = document.querySelectorAll('.carousel__slide').length;
-  const arrowLeft = document.querySelector('.carousel__arrow_left');
-  const arrowRight = document.querySelector('.carousel__arrow_right');
+function initCarousel() {  
+  const wrapper = document.querySelector('[data-carousel-holder]');
+  const inner = wrapper.querySelector('.carousel__inner');
+  const slidesAmount = wrapper.querySelectorAll('.carousel__slide').length;
+  const arrowLeft = wrapper.querySelector('.carousel__arrow_left');
+  const arrowRight = wrapper.querySelector('.carousel__arrow_right');
   let current = 0;
-  let width;
 
-  arrowLeft.style.display = 'none';
+  update();
 
-  arrowLeft.onclick = function() {
-    arrowRight.style.display = '';
-    translate(--current);
-    if (current <= 0) this.style.display = 'none';
-  }
+  wrapper.addEventListener('click', ({target}) => {
+    if (target.closest('.carousel__arrow_right')) {
+      next();
+    }
+
+    if (target.closest('.carousel__arrow_left')) {
+      prev();
+    }
+  });  
   
-  arrowRight.onclick = function() {
-    arrowLeft.style.display = '';
-    translate(++current);
-    if (current >= slidesCount - 1) this.style.display = 'none';
+  function next() {
+    current++;
+    update();
   }
 
-  function translate(current) {
-    width = document.querySelector('.carousel__slide').offsetWidth;
-    inner.style.transform = `translateX(${current * width * -1}px)`;
+  function prev() {
+    current--;
+    update();
+  }
+
+  function update() {
+    inner.style.transform = `translateX(${-inner.offsetWidth * current}px)`;
+
+    if (current >= slidesAmount - 1) {
+      arrowRight.style.display = 'none';
+    } else {
+      arrowRight.style.display = '';
+    }
+
+    if (current <= 0) {
+      arrowLeft.style.display = 'none';
+    } else {
+      arrowLeft.style.display = '';
+    }
   }
 }
