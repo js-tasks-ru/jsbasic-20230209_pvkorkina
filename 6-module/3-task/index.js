@@ -3,7 +3,10 @@ import createElement from '../../assets/lib/create-element.js';
 export default class Carousel {
   constructor(slides) {
     this.slides = slides;
+
+    this.currentSlideNumber = 0;
     this.render();
+    this.addEventListeners();
   }
 
   render() {
@@ -34,71 +37,62 @@ export default class Carousel {
         </div>
       `);
 
-      this.elem.querySelector('.carousel__inner').append(slideElem);
+      this.sub('inner').append(slideElem);
     }
 
-    this.elem.addEventListener('click', this.onClick);
-
-    this.initCarousel();
-
-    return this.elem;
+    this.update();
   }
 
-  onClick = ({target}) => {
-    let button = target.closest('.carousel__button');
+  addEventListeners() {
+    this.elem.onclick = ({target}) => {
+      let button = target.closest('.carousel__button');
+  
+      if (button) {
+        let customEv = new CustomEvent('product-add', {
+          detail: button.closest('[data-id]').dataset.id,
+          bubbles: true
+        });
+        this.elem.dispatchEvent(customEv);
+      }
 
-    if (button) {
-      let customEv = new CustomEvent('product-add', {
-        detail: button.closest('.carousel__slide').dataset.id,
-        bubbles: true
-      });
-      this.elem.dispatchEvent(customEv);
-    }
-  }
-
-  initCarousel() {
-    const inner = this.elem.querySelector('.carousel__inner');
-    const slidesAmount = this.slides.length;
-    const arrowLeft = this.elem.querySelector('.carousel__arrow_left');
-    const arrowRight = this.elem.querySelector('.carousel__arrow_right');
-    let current = 0;
-
-    update();
-
-    this.elem.addEventListener('click', ({target}) => {
       if (target.closest('.carousel__arrow_right')) {
-        next();
+        this.next();
       }
 
       if (target.closest('.carousel__arrow_left')) {
-        prev();
+        this.prev();
       }
-    });  
-    
-    function next() {
-      current++;
-      update();
+    }
+  }
+
+  sub(ref) {
+    return this.elem.querySelector(`.carousel__${ref}`);
+  }
+
+  next() {
+    this.currentSlideNumber++;
+    this.update();
+  }
+
+  prev() {
+    this.currentSlideNumber--;
+    this.update();
+  }
+
+  update() {
+    let offset = -this.sub('inner').offsetWidth * this.currentSlideNumber;
+    this.sub('inner').style.transform = `translateX(${offset}px)`;
+
+    if (this.currentSlideNumber >= this.slides.length - 1) {
+      this.sub('arrow_right').style.display = 'none';
+    } else {
+      this.sub('arrow_right').style.display = '';
     }
 
-    function prev() {
-      current--;
-      update();
-    }
-
-    function update() {
-      inner.style.transform = `translateX(${-inner.offsetWidth * current}px)`;
-
-      if (current >= slidesAmount - 1) {
-        arrowRight.style.display = 'none';
-      } else {
-        arrowRight.style.display = '';
-      }
-
-      if (current <= 0) {
-        arrowLeft.style.display = 'none';
-      } else {
-        arrowLeft.style.display = '';
-      }
+    if (this.currentSlideNumber <= 0) {
+      this.sub('arrow_left').style.display = 'none';
+    } else {
+      this.sub('arrow_left').style.display = '';
     }
   }
 }
