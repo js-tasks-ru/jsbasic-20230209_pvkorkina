@@ -38,11 +38,11 @@ export default class Modal {
     document.body.classList.add('is-modal-open');
     document.body.append(this.elem);
 
-    this.elem.onclick = ({target}) => {
+    this.elem.addEventListener('click', ({target}) => {
       if (target.closest('.modal__close') || !target.closest('.modal__inner')) {
         this.close();
       }
-    }
+    });
 
     document.addEventListener('keydown', this.onKeyDown);
   }
