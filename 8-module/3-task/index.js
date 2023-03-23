@@ -6,23 +6,52 @@ export default class Cart {
   }
 
   addProduct(product) {
-    // ваш код
+    if (!product) return;
+
+    let cartItem = this.cartItems.find(item => {
+      return item.product.id === product.id;
+    });
+    
+    if (cartItem) {
+      cartItem.count++;
+    } else {
+      this.cartItems.push({
+        product: product,
+        count: 1
+      });
+    }
+    
+    this.onProductUpdate(cartItem);
   }
 
   updateProductCount(productId, amount) {
-    // ваш код
+    let cartItem = this.cartItems.find(item => {
+      return item.product.id === productId;
+    });
+
+    cartItem.count += amount;
+
+    if (cartItem.count === 0) {
+      this.cartItems.splice(this.cartItems.indexOf(cartItem), 1);
+    }
+    
+    this.onProductUpdate(cartItem);
   }
 
   isEmpty() {
-    // ваш код
+    return this.cartItems.length === 0;
   }
 
   getTotalCount() {
-    // ваш код
+    return this.cartItems.reduce(
+      (totalCount, item) => totalCount + item.count, 0
+    );
   }
 
   getTotalPrice() {
-    // ваш код
+    return this.cartItems.reduce(
+      (totalPrice, item) => totalPrice + (item.product.price * item.count), 0
+    );
   }
 
   onProductUpdate(cartItem) {
