@@ -29,7 +29,7 @@ export default class RibbonMenu {
 
     this.sub('inner').append(...categories);
 
-    this.updateArrows();
+    this.sub('arrow_right').classList.add('ribbon__arrow_visible');
   }
 
   addEventListeners() {
